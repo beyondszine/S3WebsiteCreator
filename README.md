@@ -8,6 +8,12 @@ bash staticwebsitecreator.sh vedalabs-staging-insights us-west-2
 ```
 
 
+Test your website already by nginx:
+```sh
+docker run --rm --name=tnginx -v /path/to/my/website:/usr/share/nginx/html -p 8080:80 nginx
+```
+Now hit your localhost:8080
+
 
 Srcs:
 - https://docs.aws.amazon.com/AmazonS3/latest/user-guide/static-website-hosting.html

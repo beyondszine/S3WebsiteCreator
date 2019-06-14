@@ -6,8 +6,13 @@ BUCKETNAME=$1
 BUCKETREGION=$2
 CONTENT_FOLDER=$3
 RESULT=2 
+RETRY_TIME=10
 
-function validateInputs(){
+function showUsage() {
+	echo "Usage: bash <bucket-name> <bucket-region> <content-folder>"
+}
+
+function validateInputs() {
 	if [ ! -z "$BUCKETNAME" ]
 	then
 		echo "bucket name valid-"$BUCKETNAME
@@ -41,10 +46,13 @@ function validateInputs(){
 function createBucket(){
 	until [  $RESULT -eq 0 ]; do
 		echo "Trying to create s3 bucket"
-		aws s3 mb s3://$1 --region $2
+		aws s3 mb s3://$BUCKETNAME --region "$BUCKETREGION"
 		RESULT=$?
-		echo "sleeping again"
-		sleep 60
+		if [ $RESULT -ne 0 ]
+		then
+			echo "sleeping again"
+			sleep $RETRY_TIME
+		fi
 	done 
 	echo "Bucket created!"
 }
@@ -54,13 +62,30 @@ function copyWesbiteToBucket(){
 	aws s3 sync $CONTENT_FOLDER s3://$BUCKETNAME
 }
 
-funciton showWebsiteEndpoint(){
-	WEBSITEENDPOINT="http://$BUCKETNAME.s3-website-$BUCKETREGION.amazonaws.com"
-	echo $WEBSITEENDPOINT
+function deTemplatize(){
+	sed "s/<bucket-name>/${BUCKETNAME}/g" bucketpoliciesTemplate.json > bucketpolicies.json	
+}
+
+function updateAccessPolicies(){
+	deTemplatize
+	echo "updating Bucket policies for Public website access!"
+	aws s3api put-bucket-policy --bucket $BUCKETNAME --policy file://bucketpolicies.json
+}
+
+function showWebsiteEndpoint() {
+	WEBSITEENDPOINT="http://$BUCKETNAME.s3-website.$BUCKETREGION.amazonaws.com"
+	echo "your website is ready at: "$WEBSITEENDPOINT
+}
+
+function hostWebsite(){
+	aws s3 website s3://$BUCKETNAME --index-document index.html --error-document error.html	
+	echo  "Status: $? hosting your wesbite with index.html file & error.html as defaults. "
+
 }
 
 validateInputs
 createBucket
 copyWesbiteToBucket
-
-echo "your website is ready at: "$WEBSITEENDPOINT
+updateAccessPolicies
+hostWebsite
+showWebsiteEndpoint
