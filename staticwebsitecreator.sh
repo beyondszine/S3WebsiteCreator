@@ -1,6 +1,10 @@
 #!/bin/bash 
-#export BUCKETNAME="vedalabs-staging-insights"
-#export BUCKETREGION="us-west-2"
+
+# export these varibales before running the script.
+# export BUCKETNAME="my-test-bucket"
+# export AWS_ACCESS_KEY_ID="xxxxxxxxxxxxxx"
+# export AWS_SECRET_ACCESS_KEY="xxxxxxxxxxxxxxxxxxxxx"
+# export AWS_DEFAULT_REGION=""
 
 BUCKETNAME=$1
 BUCKETREGION=$2
