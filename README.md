@@ -8,6 +8,7 @@ This repo's shell file lets you create aws s3 bucket hosting a static website.
 
 
 <h3>Usage:</h3>
+
 - Test your current website folder already by nginx docker:
 ```sh
 docker run --rm --name=tnginx -v /path/to/my/website:/usr/share/nginx/html -p 8080:80 nginx
