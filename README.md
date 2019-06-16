@@ -1,12 +1,13 @@
-What ?
+<h3> What? </h3>
+
 This repo's shell file lets you create aws s3 bucket hosting a static website.
 
-Requirements:
+<h3>Requirements: </h3>
 - AWS credentials & appropiate Authorizations.
 - aws cli tool.
 
 
-Usage:
+<h3>Usage:</h3>
 - Test your current website folder already by nginx docker:
 ```sh
 docker run --rm --name=tnginx -v /path/to/my/website:/usr/share/nginx/html -p 8080:80 nginx
