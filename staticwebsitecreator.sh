@@ -9,6 +9,9 @@
 BUCKETNAME=$1
 BUCKETREGION=$2
 CONTENT_FOLDER=$3
+INDEX_FILE=index.html
+ERROR_FILE=error.html
+
 RESULT=2 
 RETRY_TIME=10
 
@@ -82,7 +85,7 @@ function showWebsiteEndpoint() {
 }
 
 function hostWebsite(){
-	aws s3 website s3://$BUCKETNAME --index-document index.html --error-document error.html	
+	aws s3 website s3://$BUCKETNAME --index-document $INDEX_FILE --error-document $ERROR_FILE	
 	echo  "Status: $? hosting your wesbite with index.html file & error.html as defaults. "
 
 }
