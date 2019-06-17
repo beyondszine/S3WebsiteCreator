@@ -50,6 +50,8 @@ function pipInstall(){
 
 function awscliInstall(){
     pip3 install awscli --upgrade --user	
+    # add path so that aws becomes available
+    export PATH=$PATH:$HOME/.local/bin
 }
 
 checkBase
