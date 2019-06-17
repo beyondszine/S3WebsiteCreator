@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
 retval=1
+baseOS=NULL
 
-function ifExists(){
+function ifProgExists(){
     echo "checking existence for $1"
     # check via other methods too
     $1 --version 
@@ -16,14 +17,51 @@ function ifExists(){
     fi
 }
 
-function awscliInstall(){
-    pip3 install awscli --upgrade --user
+function checkBase(){
+    FILE="/etc/alpine-release"
+    if [ -f "$FILE" ]
+    then
+    	echo "$FILE exist => Alpine system detected"
+    	baseOS=alpine
+    else
+	baseOS=ubuntu
+    fi
 }
 
+function pipInstall(){
+	if [ "$baseOS" == "alpine" ]
+	then
+		echo "do pip cli install for alpine"
+		apk add --no-cache python3
+		if [ ! -e /usr/bin/python ] 
+		    then ln -sf python3 /usr/bin/python
+		fi 
+                echo "**** install pip ****"
+	        python3 -m ensurepip
+	        rm -r /usr/lib/python*/ensurepip
+	        pip3 install --no-cache --upgrade pip setuptools wheel
+	        if [ ! -e /usr/bin/pip ]
+	       	    then ln -s pip3 /usr/bin/pip
+		fi
+	else
+		echo "do pip cli install for ubuntu"
+	fi
+}
 
-ifExists aws
+function awscliInstall(){
+    pip3 install awscli --upgrade --user	
+}
+
+checkBase
+ifProgExists aws
 if [ $retval -ne 0 ]
 then
+    ifProgExists pip3
+    if [ $retval -ne 0 ]
+    then
+	    echo "pip3 not found.  Installing pip3"
+	    pipInstall
+    fi
     echo "installing aws cli"
     awscliInstall
 else
