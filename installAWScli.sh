@@ -49,9 +49,15 @@ function pipInstall(){
 }
 
 function awscliInstall(){
-    pip3 install awscli --upgrade --user	
-    # add path so that aws becomes available
-    export PATH=$PATH:$HOME/.local/bin
+    if [ $1 == "system" ]
+    then
+        echo "installing systemwide"
+	pip3 install awscli --upgrade
+    else
+        echo "installing for current user"
+	pip3 install awscli --upgrade --user
+        export PATH=$PATH:$HOME/.local/bin
+    fi
 }
 
 checkBase
@@ -65,7 +71,7 @@ then
 	    pipInstall
     fi
     echo "installing aws cli"
-    awscliInstall
+    awscliInstall "system"
 else
     echo "aws cli already installed!"
 fi
