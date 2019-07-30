@@ -6,7 +6,6 @@ This repo's shell file lets you create aws s3 bucket hosting a static website.
 - AWS credentials & appropiate Authorizations.
 - aws cli tool.
 
-
 <h3>Usage:</h3>
 
 - Test your current website folder already by nginx docker:
